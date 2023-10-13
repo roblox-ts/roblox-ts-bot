@@ -10,6 +10,7 @@ use twilight_model::channel::message::AllowedMentions;
 mod config;
 mod events;
 mod jobs;
+mod util;
 
 #[tokio::main]
 async fn main() -> Result<()> {

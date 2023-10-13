@@ -1,7 +1,7 @@
 use anyhow::Context;
 use lazy_static::lazy_static;
 use twilight_model::id::{
-    marker::{ChannelMarker, TagMarker},
+    marker::{ApplicationMarker, ChannelMarker, TagMarker},
     Id,
 };
 
@@ -22,6 +22,7 @@ pub struct BotConfig {
     pub help_channel_id: Id<ChannelMarker>,
     pub unsolved_tag_id: Id<TagMarker>,
     pub solved_tag_id: Id<TagMarker>,
+    pub application_id: Id<ApplicationMarker>,
 }
 
 lazy_static! {
@@ -30,5 +31,6 @@ lazy_static! {
         help_channel_id: get_env_id("HELP_CHANNEL_ID"),
         unsolved_tag_id: get_env_id("UNSOLVED_TAG_ID"),
         solved_tag_id: get_env_id("SOLVED_TAG_ID"),
+        application_id: get_env_id("APPLICATION_ID"),
     };
 }

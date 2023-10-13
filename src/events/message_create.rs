@@ -1,10 +1,18 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::sync::Arc;
 use twilight_http::Client;
-use twilight_model::gateway::payload::incoming::MessageCreate;
+use twilight_model::{
+    channel::message::{
+        component::{ActionRow, Button, ButtonStyle},
+        Component, ReactionType,
+    },
+    gateway::payload::incoming::MessageCreate,
+};
 use twilight_util::builder::embed::EmbedBuilder;
+
+use crate::util::DELETE_BUTTON_ID;
 
 lazy_static! {
     static ref PLAYGROUND_REGEX: Regex =
@@ -25,16 +33,37 @@ pub async fn handle(client: Arc<Client>, event: MessageCreate) -> Result<()> {
         .color(0xE2_24_1A)
         .build()];
 
-    let mut message = client.create_message(event.channel_id).embeds(&embeds)?;
+    let components = [Component::ActionRow(ActionRow {
+        components: Vec::from([Component::Button(Button {
+            custom_id: Some(String::from(DELETE_BUTTON_ID)),
+            disabled: false,
+            emoji: Some(ReactionType::Unicode {
+                name: (String::from("🗑")),
+            }),
+            label: Some(String::from("Delete")),
+            style: ButtonStyle::Danger,
+            url: None,
+        })]),
+    })];
+
+    let mut message = client
+        .create_message(event.channel_id)
+        .embeds(&embeds)
+        .context("Invalid embeds")?
+        .components(&components)
+        .context("Invalid components")?;
 
     if let Some(referenced_message) = &event.referenced_message {
         message = message.reply(referenced_message.id);
     }
 
-    message.await?;
+    message.await.context("Failed to send playground embed")?;
+    // if the bot message fails, exit (with ?) before deleting the original message
 
-    // only delete the original message if we successfully sent an embed
-    client.delete_message(event.channel_id, event.id).await?;
+    client
+        .delete_message(event.channel_id, event.id)
+        .await
+        .context("Failed to delete original playground link")?;
 
     println!(
         "Created embedded playground link for {}",

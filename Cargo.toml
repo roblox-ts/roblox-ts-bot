@@ -12,6 +12,7 @@ anyhow = "1.0"
 tokio = { version = "1.21", features = ["full"] }
 twilight-gateway = { default-features = false, features = ["rustls-native-roots"], version = "0.14" }
 twilight-http = { default-features = false, features = ["rustls-native-roots"], version = "0.14" }
+twilight-mention = "0.14"
 twilight-model = "0.14"
 twilight-util = { default-features = false, features = ["builder"], version = "0.14" }
 regex = "1.7.0"
