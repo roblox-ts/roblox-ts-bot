@@ -8,6 +8,8 @@ export async function processThread(channel: Discord.AnyThreadChannel) {
 	// force fetch latest data (including tags)
 	channel = await channel.fetch();
 
+	if (channel.archived) return;
+
 	const hasSolved = channel.appliedTags.includes(SOLVED_TAG_ID);
 	const hasUnsolved = channel.appliedTags.includes(UNSOLVED_TAG_ID);
 
