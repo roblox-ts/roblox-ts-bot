@@ -3,7 +3,7 @@ import path from "node:path";
 import { DISCORD_TOKEN, EVENT_FOLDER } from "./constants";
 import { discord } from "./services";
 import type { DiscordEventListener } from "./util/createDiscordEventListener";
-import log from "@osyris/log";
+import { log } from "./logger";
 
 // load src/events
 for (const fileName of await fs.readdir(EVENT_FOLDER)) {

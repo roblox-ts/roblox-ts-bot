@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 import { HELP_CHANNEL_ID, SOLVED_TAG_ID, UNSOLVED_TAG_ID } from "../constants";
-import log from "@osyris/log";
+import { log } from "../logger";
 
 export async function processThread(channel: Discord.AnyThreadChannel) {
 	if (channel.parentId !== HELP_CHANNEL_ID) return;
@@ -17,10 +17,10 @@ export async function processThread(channel: Discord.AnyThreadChannel) {
 	const metadata = { name, ownerId, appliedTags, hasSolved, hasUnsolved };
 
 	if (hasSolved && hasUnsolved) {
-		log.info(`Removing unsolved tag from existing thread: "${name}"`, metadata);
+		log.info(metadata, `Removing unsolved tag from existing thread: "${name}"`);
 		await channel.setAppliedTags(appliedTags.filter(tag => tag !== UNSOLVED_TAG_ID));
 	} else if (!hasSolved && !hasUnsolved) {
-		log.info(`Adding unsolved tag to existing thread: "${name}"`, metadata);
+		log.info(metadata, `Adding unsolved tag to existing thread: "${name}"`);
 		await channel.setAppliedTags([...appliedTags, UNSOLVED_TAG_ID]);
 	}
 }

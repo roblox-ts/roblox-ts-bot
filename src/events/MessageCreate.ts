@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 import { createDiscordEventListener } from "../util/createDiscordEventListener";
-import log from "@osyris/log";
+import { log } from "../logger";
 import assert from "node:assert";
 
 const PLAYGROUND_REGEX = /^\s*https:\/\/roblox-ts\.com\/playground\/#code\/[A-Za-z0-9\-+]+\s*$/;
@@ -27,10 +27,10 @@ export default createDiscordEventListener({
 		// bot doesn't run in DMs, channel.name only works for non-DM channels
 		assert(!event.channel.isDMBased());
 
-		log.info(`Created embedded playground link for ${event.author.tag}`, {
+		log.info({
 			channnel: event.channel.name,
 			author: event.author.tag,
 			content: event.content,
-		});
+		}, `Created embedded playground link for ${event.author.tag}`);
 	},
 });
